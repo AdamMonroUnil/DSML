@@ -1,4 +1,48 @@
 import streamlit as st
+import torch
+from transformers import CamembertTokenizer, CamembertForSequenceClassification
+import joblib
 
-st.title('Our first app')
-st.write("Hello world!5")
+# Load the model and the LabelEncoder
+@st.cache(allow_output_mutation=True)
+def load_model():
+    model = CamembertForSequenceClassification.from_pretrained('camembert-base', num_labels=6)
+    model.load_state_dict(torch.load('path_to_your_saved_model/camembert_model.pth', map_location=torch.device('cpu')))
+    model.eval()
+    return model
+
+@st.cache(allow_output_mutation=True)
+def load_label_encoder():
+    return joblib.load('path_to_your_saved_label_encoder/label_encoder.joblib')
+
+model = load_model()
+label_encoder = load_label_encoder()
+tokenizer = CamembertTokenizer.from_pretrained('camembert-base')
+
+def predict_difficulty(text):
+    inputs = tokenizer(text, padding='max_length', max_length=128, truncation=True, return_tensors="pt")
+    with torch.no_grad():
+        outputs = model(**inputs)
+        predictions = torch.argmax(outputs.logits, dim=-1)
+    difficulty = label_encoder.inverse_transform([predictions.item()])[0]
+    return difficulty
+
+# Streamlit interface
+st.title('Welcome to LingoRank!')
+st.write("""
+### Overview
+LingoRank is a revolutionary startup aimed at enhancing foreign language learning. Our tool helps English speakers to improve their French by reading texts that match their language proficiency level. 
+
+Finding texts with the appropriate difficulty level (A1 to C2) can be challenging. LingoRank solves this by predicting the difficulty of French texts, aiding learners in choosing materials that are neither too easy nor too hard. 
+
+Simply enter a French text below, and LingoRank will evaluate its difficulty level, helping you to choose materials that align with your current understanding and learning goals.
+""")
+
+# Text input for prediction
+user_input = st.text_area("Enter the French text here:", height=200)
+if st.button('Predict Difficulty'):
+    if user_input:
+        difficulty = predict_difficulty(user_input)
+        st.success(f"The predicted difficulty level of the text is: {difficulty}")
+    else:
+        st.error("Please enter a French text for analysis.")
