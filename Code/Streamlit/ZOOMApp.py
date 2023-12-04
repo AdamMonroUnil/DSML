@@ -11,8 +11,8 @@ def download_file_from_google_drive(url, output_path):
         gdown.download(url, output_path, quiet=False)
 
 # URLs for the model and label encoder on Google Drive
-model_url = 'YOUR_GOOGLE_DRIVE_MODEL_URL'
-label_encoder_url = 'YOUR_GOOGLE_DRIVE_LABEL_ENCODER_URL'
+model_url = 'https://drive.google.com/uc?id=1Yy6arimJSZt9aY4sFPh4wi1f5-x6UFyO'
+label_encoder_url = 'https://drive.google.com/uc?id=1jnJirofV8QkuujkFlwQ6zz2gH06rnvA9'
 
 # Paths where to save the model and label encoder
 model_path = 'camembert_model.pth'
