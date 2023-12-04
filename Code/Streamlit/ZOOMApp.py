@@ -7,13 +7,13 @@ import joblib
 @st.cache(allow_output_mutation=True)
 def load_model():
     model = CamembertForSequenceClassification.from_pretrained('camembert-base', num_labels=6)
-    model.load_state_dict(torch.load('path_to_your_saved_model/camembert_model.pth', map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load('C:\Users\Adam\OneDrive\Desktop\Uni\UNIL\Semestre 1\Data Science & Machine Learning\Assignments\camembert_model.pth', map_location=torch.device('cpu')))
     model.eval()
     return model
 
 @st.cache(allow_output_mutation=True)
 def load_label_encoder():
-    return joblib.load('path_to_your_saved_label_encoder/label_encoder.joblib')
+    return joblib.load('C:\Users\Adam\OneDrive\Desktop\Uni\UNIL\Semestre 1\Data Science & Machine Learning\Assignments\label_encoder.joblib')
 
 model = load_model()
 label_encoder = load_label_encoder()
