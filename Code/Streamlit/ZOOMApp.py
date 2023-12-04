@@ -2,18 +2,37 @@ import streamlit as st
 import torch
 from transformers import CamembertTokenizer, CamembertForSequenceClassification
 import joblib
+import gdown
+import os
+
+# Function to download a file from Google Drive
+def download_file_from_google_drive(url, output_path):
+    if not os.path.exists(output_path):
+        gdown.download(url, output_path, quiet=False)
+
+# URLs for the model and label encoder on Google Drive
+model_url = 'YOUR_GOOGLE_DRIVE_MODEL_URL'
+label_encoder_url = 'YOUR_GOOGLE_DRIVE_LABEL_ENCODER_URL'
+
+# Paths where to save the model and label encoder
+model_path = 'camembert_model.pth'
+label_encoder_path = 'label_encoder.joblib'
+
+# Download the model and the LabelEncoder
+download_file_from_google_drive(model_url, model_path)
+download_file_from_google_drive(label_encoder_url, label_encoder_path)
 
 # Load the model and the LabelEncoder
 @st.cache(allow_output_mutation=True)
 def load_model():
     model = CamembertForSequenceClassification.from_pretrained('camembert-base', num_labels=6)
-    model.load_state_dict(torch.load(r'C:\Users\Adam\OneDrive\Desktop\Uni\UNIL\Semestre 1\Data Science & Machine Learning\Assignments\camembert_model.pth', map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     model.eval()
     return model
 
 @st.cache(allow_output_mutation=True)
 def load_label_encoder():
-    return joblib.load(r'C:\Users\Adam\OneDrive\Desktop\Uni\UNIL\Semestre 1\Data Science & Machine Learning\Assignments\label_encoder.joblib')
+    return joblib.load(label_encoder_path)
 
 model = load_model()
 label_encoder = load_label_encoder()
