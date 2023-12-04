@@ -23,14 +23,14 @@ download_file_from_google_drive(model_url, model_path)
 download_file_from_google_drive(label_encoder_url, label_encoder_path)
 
 # Load the model and the LabelEncoder
-@st.cache(allow_output_mutation=True)
+@st.cache_data()
 def load_model():
     model = CamembertForSequenceClassification.from_pretrained('camembert-base', num_labels=6)
     model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     model.eval()
     return model
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data()
 def load_label_encoder():
     return joblib.load(label_encoder_path)
 
