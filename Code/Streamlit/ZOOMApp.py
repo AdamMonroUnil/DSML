@@ -22,15 +22,15 @@ label_encoder_path = 'label_encoder.joblib'
 download_file_from_google_drive(model_url, model_path)
 download_file_from_google_drive(label_encoder_url, label_encoder_path)
 
-# Load the model and the LabelEncoder
-@st.cache
+# Load the model and the LabelEncoder using st.cache_resource
+@st.cache_resource
 def load_model():
     model = CamembertForSequenceClassification.from_pretrained('camembert-base', num_labels=6)
     model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     model.eval()
     return model
 
-@st.cache
+@st.cache_resource
 def load_label_encoder():
     return joblib.load(label_encoder_path)
 
@@ -46,30 +46,38 @@ def predict_difficulty(text):
     difficulty = label_encoder.inverse_transform([predictions.item()])[0]
     return difficulty
 
-# CSS to inject contained in a string
-st.markdown(
-    """
-    <style>
-    .reportview-container {
-        background-color: #F0F8FF;  # Light blue color
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# Set the global background color to white
+def set_global_background_color(background_color):
+    st.markdown(
+        f"""
+        <style>
+        .reportview-container .main .block-container{{
+            background-color: {background_color};
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+set_global_background_color("white")  # Set global background to white
 
 # Creating columns for layout
-left_column, right_column = st.columns([1, 3])
+left_column, right_column = st.columns([1, 2])
 
-# Using the left column for logos
+# Using the left column for logos with a light blue background
 with left_column:
-    # Displaying the University of Lausanne logo
-    unil_logo_url = "https://upload.wikimedia.org/wikipedia/commons/2/28/Logo_Universit%C3%A9_de_Lausanne.svg"
-    st.image(unil_logo_url, width=100)
-
-    # Displaying the Zoom logo
-    zoom_logo_url = "https://1000logos.net/wp-content/uploads/2021/06/Zoom-Logo.png"
-    st.image(zoom_logo_url, width=100)
+    st.markdown(
+        f"""
+        <div style="background-color:#F0F8FF;padding:10px;border-radius:5px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Logo_Universit%C3%A9_de_Lausanne.svg" 
+                 alt="University of Lausanne logo" style="width:100%">
+            <img src="https://1000logos.net/wp-content/uploads/2021/06/Zoom-Logo.png" 
+                 alt="Zoom logo" style="width:100%">
+        </div>
+        <div style="background-color:#F0F8FF;height:575px;"></div>  <!-- Spacer with light blue background -->
+        """,
+        unsafe_allow_html=True
+    )
 
 # Using the right column for the main app interface
 with right_column:
