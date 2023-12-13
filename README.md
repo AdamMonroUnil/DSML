@@ -34,14 +34,25 @@ In our project for the Kaggle competition "Detecting the Difficulty Level of Fre
 
 5. **Predictions and Results Analysis**:
    - For final predictions, our model was evaluated on a test dataset, and the results were analyzed to understand model performance.
+### Additional Machine Learning Models Used
 
-### Logistic Regression with TF-IDF Vectorization:
+In addition to the deep learning approach with Camembert, we also explored several machine learning models to enhance our understanding and approach towards the text classification challenge:
 
-In addition to the deep learning approach, we also implemented a machine learning pipeline using Logistic Regression coupled with TF-IDF Vectorization. This method provided a comparative analysis and an alternative approach to text classification.
+#### Logistic Regression with TF-IDF Vectorization:
+- We implemented a machine learning pipeline using Logistic Regression coupled with TF-IDF Vectorization.
+- This approach transforms text data into TF-IDF vectors, followed by applying Logistic Regression for classification, providing a baseline for performance comparison.
 
-- The pipeline involved transforming text data into TF-IDF vectors and then applying Logistic Regression for classification.
-- We evaluated the model's performance using standard metrics like accuracy, precision, recall, and F1-score, ensuring a comprehensive understanding of its strengths and limitations.
+#### Decision Tree Classifier:
+- The Decision Tree Classifier was employed as a part of our experimentation.
+- It offered an interpretable model structure, making the decision process transparent, especially useful for understanding feature importance in text classification.
 
+#### k-Nearest Neighbors (kNN):
+- We used the kNN algorithm for its simplicity and effectiveness in classification tasks.
+- The model classifies texts by analyzing the labels of 'k' nearest text samples in the feature space, providing insights into the clustering of text difficulties.
+
+#### Random Forest Classifier:
+- Our exploration also included the Random Forest Classifier, an ensemble learning method.
+- It uses multiple decision trees for classification, reducing the risk of overfitting. We fine-tuned its hyperparameters using GridSearchCV for optimal performance.
 ### Insights and Learning:
 
 Through this project, we gained valuable insights into the application of both deep learning and traditional machine learning techniques in natural language processing. Our experience with data preprocessing, model tuning, and performance evaluation has been enriching, contributing significantly to our understanding of text classification challenges and solutions.
