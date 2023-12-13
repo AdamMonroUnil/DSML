@@ -64,7 +64,7 @@ def set_global_background_color(background_color):
     )
 
 # Setup YouTube API
-youtube_api_key = 'YOUR_API_KEY'  # Replace with your YouTube Data API key
+youtube_api_key = 'AIzaSyDAr03oYv8y3lQs2L6AlY-AnAMwwO8ZKjo'  
 youtube = build('youtube', 'v3', developerKey=youtube_api_key)
 
 def get_video_id(video_url):
