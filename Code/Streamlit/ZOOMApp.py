@@ -4,6 +4,10 @@ from transformers import CamembertTokenizer, CamembertForSequenceClassification
 import joblib
 import gdown
 import os
+from googleapiclient.discovery import build
+from langdetect import detect
+import requests
+from xml.etree import ElementTree
 
 # Function to download a file from Google Drive
 def download_file_from_google_drive(url, output_path):
@@ -59,44 +63,87 @@ def set_global_background_color(background_color):
         unsafe_allow_html=True
     )
 
-set_global_background_color("white")  # Set global background to white
+# Setup YouTube API
+youtube_api_key = 'YOUR_API_KEY'  # Replace with your YouTube Data API key
+youtube = build('youtube', 'v3', developerKey=youtube_api_key)
 
-# Creating columns for layout
-left_column, right_column = st.columns([1, 2])
+def get_video_id(video_url):
+    return video_url.split('v=')[-1]
 
-# Using the left column for logos with a light blue background
-with left_column:
-    st.markdown(
-        f"""
-        <div style="background-color:#F0F8FF;padding:10px;border-radius:5px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Logo_Universit%C3%A9_de_Lausanne.svg" 
-                 alt="University of Lausanne logo" style="width:100%">
-            <img src="https://1000logos.net/wp-content/uploads/2021/06/Zoom-Logo.png" 
-                 alt="Zoom logo" style="width:100%">
-        </div>
-        <div style="background-color:#F0F8FF;height:575px;"></div>  <!-- Spacer with light blue background -->
-        """,
-        unsafe_allow_html=True
+def get_captions_from_url(video_id):
+    request = youtube.captions().list(
+        part="snippet",
+        videoId=video_id
     )
+    response = request.execute()
 
-# Using the right column for the main app interface
-with right_column:
-    st.title('Welcome to LingoRank!')
+    for item in response.get("items", []):
+        if item["snippet"]["language"] == "fr":
+            caption_id = item["id"]
+            break
+    else:
+        return None
 
-    st.write("""
-    ### Overview
-    LingoRank is a revolutionary startup aimed at enhancing foreign language learning. Our tool helps English speakers to improve their French by reading texts that match their language proficiency level. 
+    caption_request = youtube.captions().download(
+        id=caption_id,
+        tfmt='ttml'
+    )
+    caption_response = caption_request.execute()
 
-    Finding texts with the appropriate difficulty level (A1 to C2) can be challenging. LingoRank solves this by predicting the difficulty of French texts, aiding learners in choosing materials that are neither too easy nor too hard. 
+    # Parsing and extracting text from TTML (XML-based format)
+    captions = ''
+    root = ElementTree.fromstring(caption_response)
+    for elem in root.iter('{http://www.w3.org/ns/ttml}body'):
+        for p in elem:
+            captions += p.text + ' '
 
-    Simply enter a French text below, and LingoRank will evaluate its difficulty level, helping you to choose materials that align with your current understanding and learning goals.
-    """)
+    return captions
 
-    # Text input for prediction
-    user_input = st.text_area("Enter the French text here:", height=200)
-    if st.button('Predict Difficulty'):
-        if user_input:
-            difficulty = predict_difficulty(user_input)
-            st.success(f"The predicted difficulty level of the text is: {difficulty}")
-        else:
-            st.error("Please enter a French text for analysis.")
+# Streamlit interface
+def main():
+    set_global_background_color("white")
+
+    left_column, right_column = st.columns([1, 2])
+
+    with left_column:
+        st.image("https://upload.wikimedia.org/wikipedia/commons/2/2b/Logo_Universit%C3%A9_de_Lausanne.svg", 
+                 caption="University of Lausanne")
+        st.image("https://1000logos.net/wp-content/uploads/2021/06/Zoom-Logo.png", 
+                 caption="Zoom logo")
+
+    with right_column:
+        st.title('Welcome to LingoRank!')
+
+        st.write("""
+        ### Overview
+        LingoRank is a revolutionary startup aimed at enhancing foreign language learning. Our tool helps English speakers to improve their French by reading texts that match their language proficiency level. 
+
+        Finding texts with the appropriate difficulty level (A1 to C2) can be challenging. LingoRank solves this by predicting the difficulty of French texts, aiding learners in choosing materials that are neither too easy nor too hard. 
+
+        Simply enter a French text below, or a YouTube URL for captions, and LingoRank will evaluate its difficulty level, helping you to choose materials that align with your current understanding and learning goals.
+        """)
+
+        # Text input for prediction
+        user_input = st.text_area("Enter the French text here:", height=200)
+        youtube_url = st.text_input("Or enter a YouTube video URL:")
+
+        if st.button('Predict Difficulty'):
+            if user_input:
+                difficulty = predict_difficulty(user_input)
+                st.success(f"The predicted difficulty level of the text is: {difficulty}")
+            elif youtube_url:
+                video_id = get_video_id(youtube_url)
+                captions = get_captions_from_url(video_id)
+                if captions:
+                    if detect(captions) == 'fr':
+                        difficulty = predict_difficulty(captions)
+                        st.success(f"The predicted difficulty level of the captions is: {difficulty}")
+                    else:
+                        st.error("Captions are not in French.")
+                else:
+                    st.error("French captions not available for this video or unable to fetch captions.")
+            else:
+                st.error("Please enter a French text or a YouTube URL for analysis.")
+
+if __name__ == "__main__":
+    main()
