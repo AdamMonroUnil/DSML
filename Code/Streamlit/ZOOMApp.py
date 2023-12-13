@@ -100,6 +100,12 @@ def get_captions_from_url(video_id):
     return captions
 
 # Streamlit interface
+import streamlit as st
+# ... [Other imports remain the same]
+
+# ... [Your existing function definitions]
+
+# Streamlit interface
 def main():
     set_global_background_color("white")
 
@@ -125,13 +131,17 @@ def main():
 
         # Text input for prediction
         user_input = st.text_area("Enter the French text here:", height=200)
-        youtube_url = st.text_input("Or enter a YouTube video URL:")
-
-        if st.button('Predict Difficulty'):
+        if st.button('Predict Difficulty of Text'):
             if user_input:
                 difficulty = predict_difficulty(user_input)
                 st.success(f"The predicted difficulty level of the text is: {difficulty}")
-            elif youtube_url:
+            else:
+                st.error("Please enter a French text for analysis.")
+
+        # YouTube URL input for caption analysis
+        youtube_url = st.text_input("Or enter a YouTube video URL:")
+        if st.button('Analyze YouTube Captions'):
+            if youtube_url:
                 video_id = get_video_id(youtube_url)
                 captions = get_captions_from_url(video_id)
                 if captions:
@@ -143,7 +153,7 @@ def main():
                 else:
                     st.error("French captions not available for this video or unable to fetch captions.")
             else:
-                st.error("Please enter a French text or a YouTube URL for analysis.")
+                st.error("Please enter a YouTube URL for analysis.")
 
 if __name__ == "__main__":
     main()
