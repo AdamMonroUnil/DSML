@@ -59,4 +59,6 @@ Through this project, we gained valuable insights into the application of both d
 
 ### Conclusion:
 
-Our journey in this Kaggle competition has been a blend of challenges and learning. We invite you to explore our repository for a deeper dive into our code, methodologies, and findings. Your feedback and contributions are highly welcome!
+Our journey in this Kaggle competition has been a blend of challenges and learning. We invite you to explore our repository for a deeper dive into our code, methodologies, and findings. Your feedback and contributions are highly welcome!  
+
+Additional information can be found in the document 'Report'.
