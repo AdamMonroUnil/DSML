@@ -94,7 +94,7 @@ with left_column:
             <img src="https://1000logos.net/wp-content/uploads/2021/06/Zoom-Logo.png" 
                  alt="Zoom logo" style="width:100%">
         </div>
-        <div style="background-color:#F0F8FF;height:625px;"></div>
+        <div style="background-color:#F0F8FF;height:640px;"></div>
         """,
         unsafe_allow_html=True
     )
