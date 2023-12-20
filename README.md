@@ -8,6 +8,7 @@ This competition is an evaluation tool for the *Data Mining & Machine Learning* 
 Have a look at the: 
 * [Syllabus of the course](https://www.unil.ch/hec/en/home/menuinst/masters/systemes-d-information/cours-et-horaires.html?url=/web/syllabus/2886)
 * [GitHub of the course](https://github.com/michalis0/DataScience_and_MachineLearning)
+* [Our YouTube video explaining how it works](https://youtu.be/UeyfqJvRNbI)
 
 You can find all of our files on this GitHub repository.
 
