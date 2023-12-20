@@ -121,7 +121,7 @@ with right_column:
         else:
             st.error("Please enter a French text for analysis.")
 
-    # New feature: YouTube subtitle extraction and analysis
+    #YouTube subtitle extraction and analysis
     st.write("## Analyze YouTube Video Subtitles")
     youtube_url = st.text_input("Enter the YouTube video URL:")
     if st.button('Analyze YouTube Subtitles'):
